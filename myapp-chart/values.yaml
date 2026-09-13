@@ -1,8 +1,8 @@
 replicaCount: 3
 
 image:
-  repository: romer0o/fastapi-k3s
-  tag: latest
+  repository: k3s-fastapi
+  tag: "2.0"
   pullPolicy: IfNotPresent
 
 ingress:
