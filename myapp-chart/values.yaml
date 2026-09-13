@@ -1,7 +1,7 @@
 replicaCount: 3
 
 image:
-  repository: romer0o/fastapi-k3s
+  repository: Romer0O/fastapi-k3s
   tag: latest
   pullPolicy: IfNotPresent
 
