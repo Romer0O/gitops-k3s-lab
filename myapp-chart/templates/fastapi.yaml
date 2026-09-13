@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-fastapi
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-fastapi
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-fastapi
+    spec:
+      containers:
+        - name: fastapi
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: 8000
+          env:
+            - name: DATABASE_URL
+              value: "postgresql://postgres:postgres@postgres-service:5432/fastapi_db"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-fastapi-service
+spec:
+  selector:
+    app: {{ .Release.Name }}-fastapi
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8000
+  type: ClusterIP
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Release.Name }}-fastapi-ingress
+  annotations:
+    kubernetes.io/ingress.class: traefik
+spec:
+  rules:
+    - host: {{ .Values.ingress.host }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .Release.Name }}-fastapi-service
+                port:
+                  number: 80

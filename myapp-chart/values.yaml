@@ -1,0 +1,9 @@
+replicaCount: 2
+
+image:
+  repository: romer0o/fastapi-k3s
+  tag: latest
+  pullPolicy: IfNotPresent
+
+ingress:
+  host: fastapi.local
